@@ -1,0 +1,18 @@
+a {
+    text-decoration: none;
+}
+
+.img-logo {
+    height: 40px;
+}
+
+.bg-mercado-libre {
+    background-color: #ffe600;
+}
+
+.form-login {
+    border: 1px solid #eaeaea;
+    padding: 20px;
+    border-radius: 10px;
+
+}
