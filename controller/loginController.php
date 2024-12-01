@@ -1,30 +1,41 @@
 <?php
 require "./database.php";
 
-//verificamos si los campos no estan vacios
 if (!empty($_POST['email']) && !empty($_POST['password'])) {
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
+    $email = limpiarDatosUsuario($_POST['email']);
+    $password = limpiarDatosUsuario($_POST['password']);
+    $seller = isset($_POST['seller']) ? 'vendedor' : 'usuario';
 
-    // Consulta segura con sentencia preparada
-    $stmt = $conexion->prepare("SELECT nombre FROM usuario WHERE email = ? AND contrasenia = ?");
-    $stmt->bind_param("ss", $email, $password); // "ss" indica dos cadenas
+    // Consulta para obtener el hash de la contraseña
+    $stmt = $conexion->prepare("SELECT nombre, contrasenia, rol FROM usuario WHERE email = ? AND rol = ?");
+    $stmt->bind_param("ss", $email, $seller); // "ss" indica dos cadenas
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
-        session_start();
-        $_SESSION['usuario'] = $user['nombre'];
-        header("Location: ../index.php");
-        exit();
+        
+        // Verifica la contraseña ingresada contra el hash almacenado
+        if ($password === $user['contrasenia']) {
+            session_start();
+            $_SESSION['usuario'] = $user['nombre'];
+            $_SESSION['rol'] = $user['rol'];
+
+            if ($user['rol'] === 'vendedor') {
+                header("Location: ../view/vendedor/homeSeller.php");
+            } else {
+                header("Location: ../index.php");
+            }
+            exit();
+        } else {
+            echo '<div class="alert alert-danger">Contraseña incorrecta.</div>';
+        }
     } else {
-        echo '<div class="alert alert-danger">EL USUARIO NO EXISTE</div>';
+        echo '<div class="alert alert-danger">El usuario no existe o el rol es incorrecto.</div>';
     }
     $stmt->close();
 } else {
-    echo '<div class="alert alert-danger">LOS CAMPOS ESTÁN VACÍOS</div>';
+    echo '<div class="alert alert-danger">Los campos están vacíos.</div>';
 }
-
 
 ?>

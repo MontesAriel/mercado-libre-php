@@ -14,8 +14,8 @@
         $password = mysqli_real_escape_string($conexion, limpiarDatosUsuario($password));
         $seller = $seller ? 'vendedor' : 'usuario';
         
-        //hash contraseña
-        $password = password_hash($password, PASSWORD_BCRYPT);
+        // //hash contraseña
+        // $password = password_hash($password, PASSWORD_BCRYPT);
 
          // Verificar si el email ya está registrado
         $queryEmailCheck = "SELECT id_persona FROM usuario WHERE email = '$email' and rol = '$seller'";

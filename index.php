@@ -1,5 +1,6 @@
 <?php
-    session_start();
+    require "./controller/productController.php";
+    $discountedProducts = getProductDiscount();
 ?>
 
 <!DOCTYPE html>
@@ -56,14 +57,14 @@
                     <li><a class="nav-link">Productos</a></li>
                 </ul>
                 <ul class="d-flex list-unstyled"> 
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown d-flex">
                         <?php if (isset($_SESSION['usuario'])): ?>
                             <button class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">
                                 <?php echo htmlspecialchars($_SESSION['usuario']); ?>
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">Mi perfil</a></li>
-                                <li><a class="dropdown-item" href="#">Salir</a></li>
+                                <li><a class="dropdown-item" href="./view/logout.php">Salir</a></li>
                             </ul>
                         <?php else: ?>
                             <a href="./view/registrar.php" class="nav-link">Creá tu cuenta</a>
@@ -116,82 +117,48 @@
     <main class="py-5">
         <section class="container">
             <h2>Ofertas</h2>
-            <div id="carosuelOferta" class="carousel slide">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carosuelOferta" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carosuelOferta" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carosuelOferta" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <div id="carouselOferta" class="carousel slide">
+                <div class="carousel-indicators h-25">
+                    <?php for ($i = 0; $i < ceil(count($discountedProducts) / 3); $i++): ?>
+                        <button type="button" data-bs-target="#carouselOferta" data-bs-slide-to="<?= $i ?>" class="<?= $i === 0 ? 'active' : '' ?>" aria-current="<?= $i === 0 ? 'true' : 'false' ?>" aria-label="Slide <?= $i + 1 ?>"></button>
+                    <?php endfor; ?>
                 </div>
-                <div class="carousel-inner">
-                    <!-- Primer grupo de tarjetas -->
-                    <div class="carousel-item active">
-                        <div class="d-flex justify-content-around gap-3">
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
+                <div class="carousel-inner p-2 bg-white">
+                    <?php 
+                    $chunks = array_chunk($discountedProducts, 3);
+                    foreach ($chunks as $index => $group): ?>
+                        <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                            <div class="d-flex justify-content-around gap-3">
+                                <?php foreach ($group as $product): ?>
+                                    <div 
+                                        class="img-card shadow rounded cursor-pointer" 
+                                        onclick="window.location.href ='./view/producto.php?id=<?= $product['id_producto'] ?>'"
+                                        >
+                                        <?php if (!empty($product['fotos'])): ?>
+                                            <img src="<?= htmlspecialchars($product['fotos'][0]) ?>" class="card-img-top " alt="<?= htmlspecialchars($product['nombre']) ?>">
+                                        <?php else: ?>
+                                            <img src="./img/default-product.jpg" class="card-img-top" alt="Imagen no disponible">
+                                        <?php endif; ?>
+                                        <div class="card-body p-2">
+                                            <h5 class="card-title"><?= htmlspecialchars($product['nombre']) ?></h5>
+                                            <p class="card-text"><?= htmlspecialchars($product['descripcion']) ?></p>
+                                            <p class="card-text"><small class="text-muted">$ <?= $product['precio'] ?></small></p>
+                                            <p class="card-text"><small class="text-muted">Descuento: <?= $product['descuento'] ?>%</small></p>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
-                    </div>
-                    <!-- Segundo grupo de tarjetas -->
-                    <div class="carousel-item">
-                        <div class="d-flex justify-content-around gap-3">
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
                 <!-- Controles del carrusel -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#carosuelOferta" data-bs-slide="prev">
-                    <span class="icon-arrow"><</span>
-                    <span class="carousel-control-prev-icon visually-hidden" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselOferta" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carosuelOferta" data-bs-slide="next">
-                    <span class="icon-arrow">></span>
-                    <span class="carousel-control-next-icon visually-hidden" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselOferta" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
                 </button>
             </div>
         </section>
@@ -204,12 +171,12 @@
         <section class="container mt-4">
             <h2>Zapatillas</h2>
             <div id="carosuelVendido" class="carousel slide">
-                <div class="carousel-indicators">
+                <div class="carousel-indicators h-25">
                     <button type="button" data-bs-target="#carosuelVendido" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
                     <button type="button" data-bs-target="#carosuelVendido" data-bs-slide-to="1" aria-label="Slide 2"></button>
                     <button type="button" data-bs-target="#carosuelVendido" data-bs-slide-to="2" aria-label="Slide 3"></button>
                 </div>
-                <div class="carousel-inner">
+                <div class="carousel-inner p-2 bg-white">
                     <!-- Primer grupo de tarjetas -->
                     <div class="carousel-item active">
                         <div class="d-flex justify-content-around gap-3">
@@ -318,7 +285,6 @@
                         <h6 class="text-uppercase mb-4 font-weight-bold fw-bold">Contacto</h6>
                         <p><i class="fas fa-home mr-3"></i> Trabajá con nosotros</p>
                         <p><i class="fas fa-envelope mr-3"></i> ariel.montes@davinci.edu.ar</p>
-                        <p><i class="fas fa-phone mr-3"></i> 1153394887</p>
                     </div>
 
                     <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
@@ -328,6 +294,7 @@
                             class="btn btn-primary btn-floating m-1 border-0"
                             style="background-color: #0082ca"
                             href="https://www.linkedin.com/in/montesariel/"
+                            target="_blank"
                             role="button"
                         >
                             <i class="bi bi-linkedin"></i>
@@ -337,6 +304,7 @@
                             style="background-color: #333333"
                             href="https://github.com/MontesAriel?tab=repositories"
                             role="button"
+                            target="_blank"
                         >
                             <i class="bi bi-github"></i>
                         </a>
@@ -346,6 +314,7 @@
                             style="background-color: #dd4b39"
                             href="mailto:montesarieel@gmail.com?subject=Asunto%20del%20mensaje&body=Contenido%20del%20mensaje"
                             role="button"
+                            target="_blank"
                         >
                             <i class="bi bi-envelope-at-fill"></i>
                         </a>

@@ -35,8 +35,9 @@ body {
 
 .carousel-indicators {
     right: -200px;
-    bottom: 170px;
+    top: -40px;
     left: 700px;
+    height: 20px !important;
 }
 .carousel-indicators [data-bs-target] {
     background-color: #ccc;
@@ -167,4 +168,12 @@ body {
 
 .p-name {
     margin:auto !important;
+}
+
+.img-card {
+    max-width: 250px;
+}
+
+.card-box-shadow {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }

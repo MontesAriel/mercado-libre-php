@@ -1,0 +1,59 @@
+
+*,*::after,*::before {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  main {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+.carousel-btn {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+button {
+    background: none;
+    border: none;
+}
+
+button img {
+    width: 100%;
+    object-fit: contain;
+    padding:0;
+}
+
+.carousel-box {
+    width: 400px;
+    height: 400px;
+    margin: 5px;
+}
+
+.carousel-wrapper {
+    display: flex;
+}
+
+.carousel {
+    display: flex;
+}
+
+.carousel-box img {
+    width: 100%;
+    object-fit: contain;
+}
+
+@media screen and (max-width: 499px) {
+    .carousel-box {
+        width: 180px;
+        height: 180px;
+        margin: 5px;
+    }
+}
+
