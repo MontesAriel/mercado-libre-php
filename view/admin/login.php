@@ -15,7 +15,7 @@
         <nav class="navbar bg-mercado-libre">
             <div class="container">
                 <h1>
-                    <a class="navbar-brand">
+                    <a class="navbar-brand" href="../index.php">
                         <img src="../img/mercado-libre-logo.png" alt="logo mercado libre" class="img-logo" />
                     </a>
                 </h1>

@@ -6,21 +6,23 @@ if (!empty($_POST['email']) && !empty($_POST['password'])) {
     $password = limpiarDatosUsuario($_POST['password']);
     $seller = isset($_POST['seller']) ? 'vendedor' : 'usuario';
 
-    // Consulta para obtener el hash de la contraseña
-    $stmt = $conexion->prepare("SELECT nombre, contrasenia, rol FROM usuario WHERE email = ? AND rol = ?");
+    // Consulta para obtener la contraseña
+    $stmt = $conexion->prepare("SELECT id_persona, nombre, contrasenia, rol FROM usuario WHERE email = ? AND rol = ?");
     $stmt->bind_param("ss", $email, $seller); // "ss" indica dos cadenas
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
-        
-        // Verifica la contraseña ingresada contra el hash almacenado
+        echo $user;
+        print_r($user);
+        // Verifica la contraseña ingresada contra la contraseña almacenado
         if ($password === $user['contrasenia']) {
             session_start();
             $_SESSION['usuario'] = $user['nombre'];
             $_SESSION['rol'] = $user['rol'];
-
+            $_SESSION['id_persona'] = $user['id_persona'];
+            
             if ($user['rol'] === 'vendedor') {
                 header("Location: ../view/vendedor/homeSeller.php");
             } else {

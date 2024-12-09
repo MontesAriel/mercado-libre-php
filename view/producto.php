@@ -31,7 +31,7 @@ if (isset($_GET['id'])) {
         <nav class="navbar bg-mercado-libre">
             <div class="container">
                 <h1>
-                    <a class="navbar-brand">
+                    <a class="navbar-brand" href="../index.php">
                         <img src="../img/mercado-libre-logo.png" alt="logo mercado libre" class="img-logo" />
                     </a>
                 </h1>
@@ -131,15 +131,20 @@ if (isset($_GET['id'])) {
                 <span style="font-size:16px;" class="text-decoration-line-through text-secondary">$<?= htmlspecialchars($producto[0]['precio']) ?></span>
                 <div class="d-flex align-items-center">
                     <p style="font-size:36px">$<?= htmlspecialchars($producto[0]['precioDescuento']) ?></p>
-                    <span class="ms-2" style="font-size:18px"><?= htmlspecialchars($producto[0]['descuento']) ?>% Off</span>
+                    <span class="ms-2 " style="font-size:18px"><?= htmlspecialchars($producto[0]['descuento']) ?>% Off</span>
                 </div>    
-                <p>Color: <?= htmlspecialchars($producto[0]['color']) ?></p>
-                <p>Descripción: <?= htmlspecialchars($producto[0]['descripcion']) ?></p>
-                <p>Stock disponible</p>
+                <p>Color: <span class="fw-bold"><?= htmlspecialchars($producto[0]['color']) ?></span></p>
+                <p>Talle: <span class="border p-2 rounded"><?= htmlspecialchars($producto[0]['talle']) ?></span></p>
+                <p class="fw-bold"><?= htmlspecialchars($producto[0]['stock'] > 0 ? 'Stock disponible' : '') ?></p>
                 <p>Cantidad:</p>
                 <div class="d-flex flex-column">
                     <button class="btn btn-primary fw-bold">Comprar ahora</button>
-                    <button class="btn btn-light text-primary mt-2 fw-bold">Agregar al carrito</button>
+                    <button 
+                        class="btn btn-light text-primary mt-2 fw-bold"
+                        onclick=""
+                    >
+                        Agregar al carrito
+                    </button>
                 </div>   
                 <p>Vendedor</p>
             </div>

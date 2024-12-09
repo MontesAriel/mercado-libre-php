@@ -1,6 +1,7 @@
 <?php
     require "./controller/productController.php";
     $discountedProducts = getProductDiscount();
+    $categoryProducts = getProductZapatillas();
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +21,7 @@
         <nav class="navbar bg-mercado-libre">
             <div class="container">
                 <h1>
-                    <a class="navbar-brand">
+                    <a class="navbar-brand" href="./index.php">
                         <img src="./img/mercado-libre-logo.png" alt="logo mercado libre" class="img-logo" />
                     </a>
                 </h1>
@@ -170,82 +171,48 @@
 
         <section class="container mt-4">
             <h2>Zapatillas</h2>
-            <div id="carosuelVendido" class="carousel slide">
+            <div id="carouselZapatillas" class="carousel slide">
                 <div class="carousel-indicators h-25">
-                    <button type="button" data-bs-target="#carosuelVendido" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carosuelVendido" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carosuelVendido" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    <?php for ($i = 0; $i < ceil(count($categoryProducts) / 3); $i++): ?>
+                        <button type="button" data-bs-target="#carouselZapatillas" data-bs-slide-to="<?= $i ?>" class="<?= $i === 0 ? 'active' : '' ?>" aria-current="<?= $i === 0 ? 'true' : 'false' ?>" aria-label="Slide <?= $i + 1 ?>"></button>
+                    <?php endfor; ?>
                 </div>
                 <div class="carousel-inner p-2 bg-white">
-                    <!-- Primer grupo de tarjetas -->
-                    <div class="carousel-item active">
-                        <div class="d-flex justify-content-around gap-3">
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
+                    <?php 
+                    $chunks = array_chunk($categoryProducts, 3);
+                    foreach ($chunks as $index => $group): ?>
+                        <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                            <div class="d-flex justify-content-around gap-3">
+                                <?php foreach ($group as $product): ?>
+                                    <div 
+                                        class="img-card shadow rounded cursor-pointer" 
+                                        onclick="window.location.href ='./view/producto.php?id=<?= $product['id_producto'] ?>'"
+                                        >
+                                        <?php if (!empty($product['fotos'])): ?>
+                                            <img src="<?= htmlspecialchars($product['fotos'][0]) ?>" class="card-img-top " alt="<?= htmlspecialchars($product['nombre']) ?>">
+                                        <?php else: ?>
+                                            <img src="./img/default-product.jpg" class="card-img-top" alt="Imagen no disponible">
+                                        <?php endif; ?>
+                                        <div class="card-body p-2">
+                                            <h5 class="card-title"><?= htmlspecialchars($product['nombre']) ?></h5>
+                                            <p class="card-text"><?= htmlspecialchars($product['descripcion']) ?></p>
+                                            <p class="card-text"><small class="text-muted">$ <?= $product['precio'] ?></small></p>
+                                            <p class="card-text"><small class="text-muted">Descuento: <?= $product['descuento'] ?>%</small></p>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
-                    </div>
-                    <!-- Segundo grupo de tarjetas -->
-                    <div class="carousel-item">
-                        <div class="d-flex justify-content-around gap-3">
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <img class="card-img-top" src="..." alt="Card image cap">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
                 <!-- Controles del carrusel -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#carosuelVendido" data-bs-slide="prev">
-                    <span class="icon-arrow"><</span>
-                    <span class="carousel-control-prev-icon visually-hidden" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselZapatillas" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carosuelVendido" data-bs-slide="next">
-                    <span class="icon-arrow">></span>
-                    <span class="carousel-control-next-icon visually-hidden" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselZapatillas" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
                 </button>
             </div>
         </section>

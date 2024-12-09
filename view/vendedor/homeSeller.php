@@ -1,5 +1,7 @@
 <?php
     session_start();
+    require "../../controller/vendedorController.php";
+    $productos = getProductos();
 ?>
 
 <!DOCTYPE html>
@@ -44,75 +46,159 @@
 
     <main class="py-5 main-container">
         <div class="container">
-            <div class="row">
-                <div class="col-md-offset-1 col-md-10">
-                    <div class="panel">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col col-sm-3 col-xs-12">
-                                    <h4 class="title">Productos</h4>
-                                </div>
-                                <div class="col-sm-9 col-xs-12 text-right">
-                                    <div class="btn_group container-add-product">
-                                        <input type="text" class="form-control" placeholder="Buscar producto...">
-                                        <a class="" href="#" ><i class="bi bi-bag-plus-fill text-success"></i></a>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col col-sm-3 col-xs-12">
+                            <h4 class="title">Productos</h4>
                         </div>
-                        <div class="panel-body table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th class="fw-bold">ID</th>
-                                        <th class="fw-bold">Nombre</th>
-                                        <th class="fw-bold">Precio</th>
-                                        <th class="fw-bold">Stock</th>
-                                        <th class="fw-bold">Descripción</th>
-                                        <th class="fw-bold">Descuento</th>
-                                        <th class="fw-bold">Categoría</th>
-                                        <th class="fw-bold">Talle</th>
-                                        <th class="fw-bold">color</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Adidas Campus</td>
-                                        <td>$1.561</td>
-                                        <td>10</td>
-                                        <td>Zapatillas.....</td>
-                                        <td>10%</td>
-                                        <td>Zapatilla</td>
-                                        <td>39.5</td>
-                                        <td>Azul</td>
-                                        <td>
-                                            <ul class="d-flex list-unstyled align-items-center margin-ul">
-                                                <li><a href="#"><i class="bi bi-pencil-square text-dark"></i></a></li>
-                                                <li><a href="#"><i class="bi bi-trash ms-2 text-danger"></i></a></li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="panel-footer">
-                            <div class="row">
-                                <div class="col col-sm-6 col-xs-6">showing <b>5</b> out of <b>25</b> entries</div>
-                                <div class="col-sm-6 col-xs-6">
-                                    <ul class="pagination hidden-xs pull-right">
-                                        <li><a href="#"><</a></li>
-                                        <li class="active"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">5</a></li>
-                                        <li><a href="#">></a></li>
-                                    </ul>
-                                </div>
+                        <div class="col-sm-9 col-xs-12 text-right">
+                            <div class="btn_group container-add-product">
+                                <input type="text" class="form-control" placeholder="Buscar producto...">
+                                <button class="border-0 bg-transparent" type="button" data-toggle="modal" data-target="#agregarProducto">
+                                    <i class="bi bi-bag-plus-fill text-success icon-agregar"></i>
+                                </button>
+                                
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="panel-body table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="fw-bold">ID</th>
+                                <th class="fw-bold">Nombre</th>
+                                <th class="fw-bold">Precio</th>
+                                <th class="fw-bold">Stock</th>
+                                <th class="fw-bold">Descripción</th>
+                                <th class="fw-bold">Descuento</th>
+                                <th class="fw-bold">Categoría</th>
+                                <th class="fw-bold">Talle</th>
+                                <th class="fw-bold">color</th>
+                                <th class="fw-bold">Imagenes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($productos as $producto): ?>
+                                <tr>
+                                    <td><?php echo $producto['id_producto']; ?></td>
+                                    <td><?php echo $producto['producto_nombre']; ?></td>
+                                    <td>$<?php echo number_format($producto['precio'], 2); ?></td>
+                                    <td><?php echo $producto['stock']; ?></td>
+                                    <td><?php echo $producto['descripcion']; ?></td>
+                                    <td><?php echo $producto['descuento']; ?>%</td>
+                                    <td><?php echo $producto['categoria']; ?></td>
+                                    <td><?php echo $producto['talle']; ?></td>
+                                    <td><?php echo $producto['color']; ?></td>
+                                    <td>
+                                        <div class="product-images d-flex">
+                                            <?php if (!empty($producto['fotos'])): ?> <!-- Cambié $product a $producto -->
+                                                <?php foreach ($producto['fotos'] as $foto): ?>
+                                                    <img src="<?php echo htmlspecialchars('../.' . $foto); ?>" alt="Imagen del producto" style="width: 50px; height: 50px;">
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <p>No hay imágenes disponibles para este producto.</p>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <ul class="d-flex list-unstyled align-items-center margin-ul justify-content-between">
+                                            <li>
+                                                <button class="button-product-pencil" type="button" data-toggle="modal" data-target="#editarProducto">
+                                                    <i class="bi bi-pencil-square text-white"></i>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="button-product-danger" type="button" data-toggle="modal" data-target="#eliminarProducto">
+                                                    <i class="bi bi-trash text-white"></i>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col col-sm-6 col-xs-6">showing <b>5</b> out of <b>25</b> entries</div>
+                        <div class="col-sm-6 col-xs-6">
+                            <ul class="pagination hidden-xs pull-right">
+                                <li><a href="#"><</a></li>
+                                <li class="active"><a href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li><a href="#">4</a></li>
+                                <li><a href="#">5</a></li>
+                                <li><a href="#">></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="agregarProducto" tabindex="-1" role="dialog" aria-labelledby="agregarProductoTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Crear producto</h5>
+                </div>
+                <form class="modal-body" method="POST" action="../../controller/agregarProductoController.php" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="agregarProducto">
+                    <!-- nombre input -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label  for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" class="form-control form-control-lg" />
+                    </div>
+
+                    <!-- precio input -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label  for="precio">Precio</label>
+                        <input type="number" id="precio" name="precio" class="form-control form-control-lg" />
+                    </div>
+                       
+                    <!-- stock input -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label  for="stock">Stock</label>
+                        <input type="number" id="stock" name="stock" class="form-control form-control-lg" />
+                    </div>
+                    <!-- descripcion input -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label  for="descripcion">Descripción</label>
+                        <input type="text" id="descripcion" name="descripcion" class="form-control form-control-lg" />
+                    </div>  
+                    <!-- descuento input -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label  for="descuento">Descuento</label>
+                        <input type="number" id="descuento" name="descuento" class="form-control form-control-lg" />
+                    </div>
+                    <!-- categoria input -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label  for="categoria">Categoría</label>
+                        <input type="text" id="categoria" name="categoria" class="form-control form-control-lg" />
+                    </div>
+                    <!-- talle input -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label  for="talle">Talle</label>
+                        <input type="text" id="talle" name="talle" class="form-control form-control-lg" />
+                    </div>
+                    <!-- color input -->
+                    <div data-mdb-input-init class="form-outline mb-2">
+                        <label  for="color">Color</label>
+                        <input type="text" id="color" name="color" class="form-control form-control-lg" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Imágenes</label>
+                        <input class="form-control" type="file" id="formFile" name="imagenes[]" multiple accept="image/*">
+                    </div>
+                    <div id="imagePreview" class="d-flex flex-wrap gap-2"></div>                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button  type="submit" class="btn btn-primary">Agregar producto</button>
+                    </div>
+                </form>
                 </div>
             </div>
         </div>
@@ -196,6 +282,9 @@
             <p class="ms-1"> Realizado por Ariel Montes</p>
         </div>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <script src="../../js/PreviewImage.js"></script>
 </body>
 </html>

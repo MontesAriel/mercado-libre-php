@@ -17,7 +17,19 @@
         $idProducto = $row['id_producto'];
         if (isset($product[$idProducto])) {
            $product[$idProducto]['fotos'][] = $row['foto'];
+           if ($row['descuento'] > 0) {
+            $priceDisccount = $row['precio'] - (($row['descuento'] * $row['precio']) / 100);
+            // Agregar el precio con descuento
+            $products[$idProducto]['precioDescuento'] = $priceDisccount;
+         }
         } else {
+            $priceDisccount = $row['precio']; 
+
+            if($row['descuento'] > 0) {
+               $priceDisccount = $row['precio'] - (($row['descuento'] * $row['precio']) / 100);
+               $row['precioDescuento'] = $priceDisccount;
+            }
+
            $product[$idProducto] = [
                  'id_producto' => $row['id_producto'],
                  'nombre' => $row['nombre'],
@@ -28,11 +40,13 @@
                  'talle' => $row['talle'],
                  'color' => $row['color'],
                  'stock' => $row['stock'],
-                 'fotos' => [$row['foto']]
+                 'fotos' => [$row['foto']],
+                 'precioDescuento' => isset($row['precioDescuento']) ? $row['precioDescuento'] : null
+
            ];
         }
     }  
-    // Reindexar el array por índices numéricos
+
     $product = array_values($product);
     return $product;
     }
