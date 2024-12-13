@@ -1,7 +1,9 @@
 <?php
     session_start();
     require "../../controller/vendedorController.php";
-    $productos = getProductos();
+
+    $busqueda = isset($_GET['busqueda']) ? $_GET['busqueda'] : '';
+    $productos = getProductos($busqueda);
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mercado Libre</title>
     <link rel="icon" type="image/x-icon" href="../../img/favicon-ml.ico">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../styles/style.css">
     <link rel="stylesheet" href="../../styles/homeSeller.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -33,7 +35,7 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">Mi perfil</a></li>
-                                <li><a class="dropdown-item" href="./view/logout.php">Salir</a></li>
+                                <li><a class="dropdown-item" href="../logout.php">Salir</a></li>
                             </ul>
                         <?php endif; ?>
                     </li>
@@ -53,9 +55,14 @@
                             <h4 class="title">Productos</h4>
                         </div>
                         <div class="col-sm-9 col-xs-12 text-right">
-                            <div class="btn_group container-add-product">
-                                <input type="text" class="form-control" placeholder="Buscar producto...">
-                                <button class="border-0 bg-transparent" type="button" data-toggle="modal" data-target="#agregarProducto">
+                            <div  class="btn_group container-add-product">
+                                <form class="d-flex" action="" method="GET">
+                                    <input type="text" class="form-control" name="busqueda" placeholder="Buscar producto...">
+                                    <button type="submit" name="enviar" class="input-group-text cursor-pointer" id="search-icon">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </form>
+                                <button class="border-0 bg-transparent" type="button" data-bs-toggle="modal" data-bs-target="#agregarProducto">
                                     <i class="bi bi-bag-plus-fill text-success icon-agregar"></i>
                                 </button>
                                 
@@ -93,7 +100,7 @@
                                     <td><?php echo $producto['color']; ?></td>
                                     <td>
                                         <div class="product-images d-flex">
-                                            <?php if (!empty($producto['fotos'])): ?> <!-- Cambié $product a $producto -->
+                                            <?php if (!empty($producto['fotos'])): ?>
                                                 <?php foreach ($producto['fotos'] as $foto): ?>
                                                     <img src="<?php echo htmlspecialchars('../.' . $foto); ?>" alt="Imagen del producto" style="width: 50px; height: 50px;">
                                                 <?php endforeach; ?>
@@ -103,25 +110,31 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <ul class="d-flex list-unstyled align-items-center margin-ul justify-content-between">
-                                            <li>
-                                                <button class="button-product-pencil" type="button" data-toggle="modal" data-target="#editarProducto">
-                                                    <i class="bi bi-pencil-square text-white"></i>
+                                    <ul class="d-flex list-unstyled align-items-center margin-ul justify-content-between">
+                                        <li>
+                                            <!-- Campo oculto con el ID del producto -->
+                                            <a href="./editarProducto.php?id=<?php echo $producto['id_producto']; ?>">
+                                                <button class="button-product-pencil" type="submit">
+                                                <i class="bi bi-pencil-square text-white"></i>
                                                 </button>
-                                            </li>
-                                            <li>
-                                                <button class="button-product-danger" type="button" data-toggle="modal" data-target="#eliminarProducto">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="./eliminarProducto.php?id=<?php echo $producto['id_producto']; ?>">
+                                                <button class="button-product-danger" type="submit">
                                                     <i class="bi bi-trash text-white"></i>
                                                 </button>
-                                            </li>
-                                        </ul>
+                                            </a>
+                                        </li>
+                                    </ul>
+
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
-                <div class="panel-footer">
+                <!-- <div class="panel-footer">
                     <div class="row">
                         <div class="col col-sm-6 col-xs-6">showing <b>5</b> out of <b>25</b> entries</div>
                         <div class="col-sm-6 col-xs-6">
@@ -136,7 +149,7 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="modal fade" id="agregarProducto" tabindex="-1" role="dialog" aria-labelledby="agregarProductoTitle" aria-hidden="true">
@@ -145,8 +158,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Crear producto</h5>
                 </div>
-                <form class="modal-body" method="POST" action="../../controller/agregarProductoController.php" enctype="multipart/form-data">
-                    <input type="hidden" name="action" value="agregarProducto">
+                <form class="modal-body" method="POST" action="agregarProducto.php" enctype="multipart/form-data">
                     <!-- nombre input -->
                     <div data-mdb-input-init class="form-outline mb-2">
                         <label  for="nombre">Nombre</label>
@@ -195,7 +207,7 @@
                     </div>
                     <div id="imagePreview" class="d-flex flex-wrap gap-2"></div>                    
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         <button  type="submit" class="btn btn-primary">Agregar producto</button>
                     </div>
                 </form>
@@ -284,7 +296,7 @@
     </footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../js/PreviewImage.js"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 <?php
+    session_start();
     require "./controller/productController.php";
     $discountedProducts = getProductDiscount();
     $categoryProducts = getProductZapatillas();
@@ -48,11 +49,10 @@
                             Categorias
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Separated link</a></li>
+                            <li><a class="dropdown-item" href="#">Zapatillas</a></li>
+                            <li><a class="dropdown-item" href="#">Hogar</a></li>
+                            <li><a class="dropdown-item" href="#">Pantalones</a></li>
+                            <li><a class="dropdown-item" href="#">Remeras</a></li>
                         </ul>
                     </li>
                     <li><a class="nav-link">Productos</a></li>
@@ -116,35 +116,40 @@
     </header>
 
     <main class="py-5">
-        <section class="container">
+        <section class="container p-4 bg-white">
             <h2>Ofertas</h2>
             <div id="carouselOferta" class="carousel slide">
                 <div class="carousel-indicators h-25">
-                    <?php for ($i = 0; $i < ceil(count($discountedProducts) / 3); $i++): ?>
+                    <?php for ($i = 0; $i < ceil(count($discountedProducts) / 5); $i++): ?>
                         <button type="button" data-bs-target="#carouselOferta" data-bs-slide-to="<?= $i ?>" class="<?= $i === 0 ? 'active' : '' ?>" aria-current="<?= $i === 0 ? 'true' : 'false' ?>" aria-label="Slide <?= $i + 1 ?>"></button>
                     <?php endfor; ?>
                 </div>
-                <div class="carousel-inner p-2 bg-white">
+                <div class="carousel-inner">
                     <?php 
-                    $chunks = array_chunk($discountedProducts, 3);
+                    $chunks = array_chunk($discountedProducts, 5);
                     foreach ($chunks as $index => $group): ?>
                         <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
                             <div class="d-flex justify-content-around gap-3">
                                 <?php foreach ($group as $product): ?>
                                     <div 
-                                        class="img-card shadow rounded cursor-pointer" 
+                                        class="img-card shadow rounded cursor-pointer"
+                                        style="height:430px"
                                         onclick="window.location.href ='./view/producto.php?id=<?= $product['id_producto'] ?>'"
                                         >
                                         <?php if (!empty($product['fotos'])): ?>
-                                            <img src="<?= htmlspecialchars($product['fotos'][0]) ?>" class="card-img-top " alt="<?= htmlspecialchars($product['nombre']) ?>">
+                                            <img src="<?= htmlspecialchars($product['fotos'][0]) ?>" class="card-img-top" style="height:250px" alt="<?= htmlspecialchars($product['nombre']) ?>">
                                         <?php else: ?>
                                             <img src="./img/default-product.jpg" class="card-img-top" alt="Imagen no disponible">
                                         <?php endif; ?>
                                         <div class="card-body p-2">
                                             <h5 class="card-title"><?= htmlspecialchars($product['nombre']) ?></h5>
-                                            <p class="card-text"><?= htmlspecialchars($product['descripcion']) ?></p>
-                                            <p class="card-text"><small class="text-muted">$ <?= $product['precio'] ?></small></p>
-                                            <p class="card-text"><small class="text-muted">Descuento: <?= $product['descuento'] ?>%</small></p>
+                                            <p class="card-text mt-2" style="font-size:14px"><?= htmlspecialchars($product['descripcion']) ?></p>
+                                            <div class="d-flex align-items-center">
+                                                <p class="fw-bold" style="font-size:24px">$ <?= $product['precio'] ?></p>
+                                                <?php if ($product['descuento'] > 0): ?>
+                                                    <p class="ms-2" style="color:#00a650"><small><?= $product['descuento'] ?>% Off</small></p>
+                                                <?php endif; ?>
+                                            </div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -169,17 +174,17 @@
         
         </section>
 
-        <section class="container mt-4">
+        <section class="container mt-4 p-4 bg-white">
             <h2>Zapatillas</h2>
             <div id="carouselZapatillas" class="carousel slide">
                 <div class="carousel-indicators h-25">
-                    <?php for ($i = 0; $i < ceil(count($categoryProducts) / 3); $i++): ?>
+                    <?php for ($i = 0; $i < ceil(count($categoryProducts) / 5); $i++): ?>
                         <button type="button" data-bs-target="#carouselZapatillas" data-bs-slide-to="<?= $i ?>" class="<?= $i === 0 ? 'active' : '' ?>" aria-current="<?= $i === 0 ? 'true' : 'false' ?>" aria-label="Slide <?= $i + 1 ?>"></button>
                     <?php endfor; ?>
                 </div>
-                <div class="carousel-inner p-2 bg-white">
+                <div class="carousel-inner">
                     <?php 
-                    $chunks = array_chunk($categoryProducts, 3);
+                    $chunks = array_chunk($categoryProducts, 5);
                     foreach ($chunks as $index => $group): ?>
                         <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
                             <div class="d-flex justify-content-around gap-3">
@@ -189,15 +194,19 @@
                                         onclick="window.location.href ='./view/producto.php?id=<?= $product['id_producto'] ?>'"
                                         >
                                         <?php if (!empty($product['fotos'])): ?>
-                                            <img src="<?= htmlspecialchars($product['fotos'][0]) ?>" class="card-img-top " alt="<?= htmlspecialchars($product['nombre']) ?>">
+                                            <img src="<?= htmlspecialchars($product['fotos'][0]) ?>" class="card-img-top" style="height:250px" alt="<?= htmlspecialchars($product['nombre']) ?>">
                                         <?php else: ?>
                                             <img src="./img/default-product.jpg" class="card-img-top" alt="Imagen no disponible">
                                         <?php endif; ?>
                                         <div class="card-body p-2">
                                             <h5 class="card-title"><?= htmlspecialchars($product['nombre']) ?></h5>
-                                            <p class="card-text"><?= htmlspecialchars($product['descripcion']) ?></p>
-                                            <p class="card-text"><small class="text-muted">$ <?= $product['precio'] ?></small></p>
-                                            <p class="card-text"><small class="text-muted">Descuento: <?= $product['descuento'] ?>%</small></p>
+                                            <p class="card-text mt-2" style="font-size:14px"><?= htmlspecialchars($product['descripcion']) ?></p>
+                                            <div class="d-flex align-items-center">
+                                                <p class="fw-bold" style="font-size:24px">$ <?= $product['precio'] ?></p>
+                                                <?php if ($product['descuento'] > 0): ?>
+                                                    <p class="ms-2" style="color:#00a650"><small><?= $product['descuento'] ?>% Off</small></p>
+                                                <?php endif; ?>
+                                            </div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>

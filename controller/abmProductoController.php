@@ -1,26 +1,16 @@
 <?php
-    require "./database.php";
-    session_start();
+    // require "./database.php";
+    // session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verificar si se recibe una acción
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
-        
+    
         // Ejecutar la acción correspondiente
         switch ($action) {
             case 'agregarProducto':
                 agregarProducto($_POST);
-                break;
-            case 'eliminarProducto':
-                if (isset($_POST['id'])) {
-                    eliminarProducto($_POST['id']);
-                }
-                break;
-            case 'actualizarProducto':
-                if (isset($_POST['id'])) {
-                    actualizarProducto($_POST['id'], $_POST);
-                }
                 break;
             default:
                 echo "Acción no válida";
@@ -57,7 +47,6 @@ function agregarProducto($data) {
 
     // Guardar las imágenes en la tabla `foto_producto`
 
-    print_r($_FILES['imagenes']);
     if (isset($_FILES['imagenes']) && !empty($_FILES['imagenes']['name'][0])) {
         $uploadDir = '../img/products/';
         foreach ($_FILES['imagenes']['tmp_name'] as $key => $tmpName) {
@@ -68,8 +57,6 @@ function agregarProducto($data) {
                 $fotoPath = './img/products/' . $fileName;
                 $queryFoto = "INSERT INTO foto_producto (foto, id_producto) VALUES (?, ?)";
                 $stmtFoto = $conexion->prepare($queryFoto);
-                echo $fotoPath;
-                echo $idProducto;
                 $stmtFoto->bind_param("si", $fotoPath, $idProducto);
                 if ($stmtFoto->execute()) {
                     echo "Imagen $fileName insertada correctamente en la base de datos.<br>";
@@ -89,9 +76,6 @@ function agregarProducto($data) {
 }
 
 
-function eliminarProducto($id){}
-function actualizarProducto($id){}
-function searchProducto(){}
-function paginacion(){}
+
 
 ?>

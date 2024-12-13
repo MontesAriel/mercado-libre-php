@@ -23,10 +23,10 @@ function cerrarYMostrarModal(tipo) {
     // Cierra el modal "Agregar Producto"
     $('#agregarProducto').modal('hide');
 
-    // Mostrar el modal correspondiente según el tipo
     if (tipo === 'exito') {
         $('#modalExito').modal('show');
     } else if (tipo === 'error') {
         $('#modalError').modal('show');
     }
 }
+

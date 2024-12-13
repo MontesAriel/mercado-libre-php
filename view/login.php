@@ -27,7 +27,7 @@
         <div class="container py-5 h-100">
             <div class="row d-flex align-items-center justify-content-center">
                 <div class="d-flex justify-content-center w-75">
-                    <h2>Ingresá tu e-mail o teléfono para iniciar sesión</h2>
+                    <h2>Ingresá con tu e-mail para iniciar sesión</h2>
                 <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
                     <form class="form-login" method="POST" action="../controller/loginController.php">
                         <!-- Email input -->

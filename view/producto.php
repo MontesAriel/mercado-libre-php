@@ -128,11 +128,16 @@ if (isset($_GET['id'])) {
             <div class="border p-2 rounded" style="min-width:350px">
                 <h2 style="font-size:22px" class="pb-2"><?= htmlspecialchars($producto[0]['nombre']) ?></h2>
 
-                <span style="font-size:16px;" class="text-decoration-line-through text-secondary">$<?= htmlspecialchars($producto[0]['precio']) ?></span>
-                <div class="d-flex align-items-center">
-                    <p style="font-size:36px">$<?= htmlspecialchars($producto[0]['precioDescuento']) ?></p>
-                    <span class="ms-2 " style="font-size:18px"><?= htmlspecialchars($producto[0]['descuento']) ?>% Off</span>
-                </div>    
+                <?php if ($producto[0]['descuento'] > 0): ?>
+                    <span style="font-size:16px;" class="text-decoration-line-through text-secondary">$<?= htmlspecialchars($producto[0]['precio']) ?></span>
+                    <div class="d-flex align-items-center">
+                        <p style="font-size:36px">$<?= htmlspecialchars($producto[0]['precioDescuento']) ?></p>
+                        <span class="ms-2 " style="font-size:18px; color:#00a650"><?= htmlspecialchars($producto[0]['descuento']) ?>% Off</span>
+                    </div>    
+                <?php else: ?>
+                    <span style="font-size:36px;" class="">$<?= htmlspecialchars($producto[0]['precio']) ?></span>
+                <?php endif; ?>
+                
                 <p>Color: <span class="fw-bold"><?= htmlspecialchars($producto[0]['color']) ?></span></p>
                 <p>Talle: <span class="border p-2 rounded"><?= htmlspecialchars($producto[0]['talle']) ?></span></p>
                 <p class="fw-bold"><?= htmlspecialchars($producto[0]['stock'] > 0 ? 'Stock disponible' : '') ?></p>
@@ -146,7 +151,7 @@ if (isset($_GET['id'])) {
                         Agregar al carrito
                     </button>
                 </div>   
-                <p>Vendedor</p>
+                <p class="mt-3"><strong>Vendedor</strong> <?= htmlspecialchars($producto[0]['vendedor_nombre']) ?> <?= htmlspecialchars($producto[0]['vendedor_apellido']) ?></p>
             </div>
         </section>
     </main>

@@ -1,5 +1,23 @@
 <?php
-    session_start();
+    require_once('../../controller/database.php');
+    $id = $_GET['id'];
+    $query = "SELECT 
+    producto.id_producto, 
+    producto.nombre AS producto_nombre, 
+    producto.precio, 
+    producto.descripcion, 
+    producto.descuento, 
+    producto.categoria, 
+    producto.talle, 
+    producto.color, 
+    producto.stock, 
+    usuario.nombre AS usuario_nombre
+    FROM producto
+    INNER JOIN producto_usuario ON producto.id_producto = producto_usuario.id_producto
+    INNER JOIN usuario ON producto_usuario.id_persona = usuario.id_persona
+    WHERE producto.id_producto = $id;";
+    $result = $conexion->query($query);
+    $record = $result->fetch_assoc();
 ?>
 
 <!DOCTYPE html>
@@ -41,81 +59,72 @@
         </nav>
 
     </header>
-
-    <main class="py-5 main-container">
-        <div class="container">
+    
+    <main class="container mt-4" style="height:60vh;">
+        <form class="modal-body" method="POST" action="updateProduct.php" enctype="multipart/form-data">
             <div class="row">
-                <div class="col-md-offset-1 col-md-10">
-                    <div class="panel">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col col-sm-3 col-xs-12">
-                                    <h4 class="title">Productos</h4>
-                                </div>
-                                <div class="col-sm-9 col-xs-12 text-right">
-                                    <div class="btn_group container-add-product">
-                                        <input type="text" class="form-control" placeholder="Buscar producto...">
-                                        <a class="" href="#" ><i class="bi bi-bag-plus-fill text-success"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-body table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th class="fw-bold">ID</th>
-                                        <th class="fw-bold">Nombre</th>
-                                        <th class="fw-bold">Precio</th>
-                                        <th class="fw-bold">Stock</th>
-                                        <th class="fw-bold">Descripción</th>
-                                        <th class="fw-bold">Descuento</th>
-                                        <th class="fw-bold">Categoría</th>
-                                        <th class="fw-bold">Talle</th>
-                                        <th class="fw-bold">color</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Adidas Campus</td>
-                                        <td>$1.561</td>
-                                        <td>10</td>
-                                        <td>Zapatillas.....</td>
-                                        <td>10%</td>
-                                        <td>Zapatilla</td>
-                                        <td>39.5</td>
-                                        <td>Azul</td>
-                                        <td>
-                                            <ul class="d-flex list-unstyled align-items-center margin-ul">
-                                                <li><a href="#"><i class="bi bi-pencil-square text-dark"></i></a></li>
-                                                <li><a href="#"><i class="bi bi-trash ms-2 text-danger"></i></a></li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="panel-footer">
-                            <div class="row">
-                                <div class="col col-sm-6 col-xs-6">showing <b>5</b> out of <b>25</b> entries</div>
-                                <div class="col-sm-6 col-xs-6">
-                                    <ul class="pagination hidden-xs pull-right">
-                                        <li><a href="#"><</a></li>
-                                        <li class="active"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">5</a></li>
-                                        <li><a href="#">></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- nombre input -->
+                <div data-mdb-input-init class="form-outline mb-2 col-6">
+                    <label  for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" class="form-control form-control-lg" value="<?php echo $record['producto_nombre'] ?>" />
+                </div>
+        
+                <!-- precio input -->
+                <div data-mdb-input-init class="form-outline mb-2 col-6">
+                    <label  for="precio">Precio</label>
+                    <input type="number" id="precio" name="precio" class="form-control form-control-lg" value="<?php echo $record['precio'] ?>"/>
                 </div>
             </div>
-        </div>
+                
+            <div class="row">
+                <!-- stock input -->
+                <div data-mdb-input-init class="form-outline mb-2 col-6">
+                    <label  for="stock">Stock</label>
+                    <input type="number" id="stock" name="stock" class="form-control form-control-lg" value="<?php echo $record['stock'] ?>"/>
+                </div>
+                <!-- descripcion input -->
+                <div data-mdb-input-init class="form-outline mb-2 col-6">
+                    <label  for="descripcion">Descripción</label>
+                    <input type="text" id="descripcion" name="descripcion" class="form-control form-control-lg" value="<?php echo $record['descripcion'] ?>"/>
+                </div>  
+            </div>
+
+            <div class="row">
+                <!-- descuento input -->
+                <div data-mdb-input-init class="form-outline mb-2 col-6">
+                    <label  for="descuento">Descuento</label>
+                    <input type="number" id="descuento" name="descuento" class="form-control form-control-lg" value="<?php echo $record['descuento'] ?>"/>
+                </div>
+                <!-- categoria input -->
+                <div data-mdb-input-init class="form-outline mb-2 col-6">
+                    <label  for="categoria">Categoría</label>
+                    <input type="text" id="categoria" name="categoria" class="form-control form-control-lg" value="<?php echo $record['categoria'] ?>"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- talle input -->
+                <div data-mdb-input-init class="form-outline mb-2 col-6">
+                    <label  for="talle">Talle</label>
+                    <input type="text" id="talle" name="talle" class="form-control form-control-lg" value="<?php echo $record['talle'] ?>"/>
+                </div>
+                <!-- color input -->
+                <div data-mdb-input-init class="form-outline mb-2 col-6">
+                    <label  for="color">Color</label>
+                    <input type="text" id="color" name="color" class="form-control form-control-lg" value="<?php echo $record['color'] ?>"/>
+                </div>
+            </div>
+            <!-- <div class="mb-3">
+                <label for="formFile" class="form-label">Imágenes</label>
+                <input class="form-control" type="file" id="formFile" name="imagenes[]" multiple accept="image/*" value="<?php echo $record['fotos'] ?>">
+            </div>
+            <div id="imagePreview" class="d-flex flex-wrap gap-2"></div> -->
+            <input type="hidden" name="id" value="<?php echo $id ?>">                    
+            <div class="d-flex justify-content-center mt-4">
+                <a href="./homeSeller.php" type="button" class="btn btn-secondary me-2">Cerrar</a>
+                <button  type="submit" class="btn btn-primary ms-2">Modificar producto</button>
+            </div>
+        </form>
     </main>
 
     <footer class="text-center text-lg-start bottom-0 start-0 end-0 bg-mercado-libre">
@@ -196,6 +205,5 @@
             <p class="ms-1"> Realizado por Ariel Montes</p>
         </div>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
